@@ -52,5 +52,5 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.google.android.gms:play-services-safetynet:15.0.0'
+    implementation 'com.google.android.gms:play-services-safetynet:18.0.1'
 }
