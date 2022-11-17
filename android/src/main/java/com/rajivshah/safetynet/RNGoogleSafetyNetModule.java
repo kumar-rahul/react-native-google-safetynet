@@ -83,6 +83,9 @@ public class RNGoogleSafetyNetModule extends ReactContextBaseJavaModule {
     Activity activity;
     nonce = stringToBytes(nonceString);
     activity = getCurrentActivity();
+
+activity.runOnUiThread(
+
     SafetyNet.getClient(baseContext).attest(nonce, apiKey)
     .addOnSuccessListener(activity,
     new OnSuccessListener<SafetyNetApi.AttestationResponse>() {
@@ -98,6 +101,7 @@ public class RNGoogleSafetyNetModule extends ReactContextBaseJavaModule {
         promise.reject(e);
       }
     });
+)    
   }
 
   /**
