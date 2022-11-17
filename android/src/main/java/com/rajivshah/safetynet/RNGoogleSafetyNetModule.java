@@ -80,28 +80,34 @@ public class RNGoogleSafetyNetModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void sendAttestationRequest(String nonceString, String apiKey, final Promise promise){
     byte[] nonce;
-    Activity activity;
+    final Activity activity;
     nonce = stringToBytes(nonceString);
     activity = getCurrentActivity();
-
-activity.runOnUiThread(
-
     SafetyNet.getClient(baseContext).attest(nonce, apiKey)
-    .addOnSuccessListener(activity,
-    new OnSuccessListener<SafetyNetApi.AttestationResponse>() {
-      @Override
-      public void onSuccess(SafetyNetApi.AttestationResponse response) {
-        String result = response.getJwsResult();
-        promise.resolve(result);
-      }
-    })
-    .addOnFailureListener(activity, new OnFailureListener() {
-      @Override
-      public void onFailure(@NonNull Exception e) {
-        promise.reject(e);
-      }
-    });
-)    
+          .addOnSuccessListener(activity,
+                  new OnSuccessListener<SafetyNetApi.AttestationResponse>() {
+                      @Override
+                      public void onSuccess(final SafetyNetApi.AttestationResponse response) {
+                          activity.runOnUiThread(new Runnable() {
+                              @Override
+                              public void run() {
+                                  String result = response.getJwsResult();
+                                  promise.resolve(result);
+                              }
+                          });
+                      }
+                  })
+          .addOnFailureListener(activity, new OnFailureListener() {
+              @Override
+              public void onFailure(final @NonNull Exception e) {
+                  activity.runOnUiThread(new Runnable() {
+                      @Override
+                      public void run() {
+                          promise.reject(e);
+                      }
+                  });
+              }
+          });
   }
 
   /**
