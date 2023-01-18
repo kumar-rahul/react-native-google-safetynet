@@ -83,6 +83,9 @@ public class RNGoogleSafetyNetModule extends ReactContextBaseJavaModule {
     final Activity activity;
     nonce = stringToBytes(nonceString);
     activity = getCurrentActivity();
+    if(activity == null)
+      return;
+
     activity.runOnUiThread(new Runnable() {
       @Override
       public void run() {
